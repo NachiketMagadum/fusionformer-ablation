@@ -210,6 +210,12 @@ def main():
                         help="fraction of the pre-anomaly rows used for training (SKAB only)")
     parser.add_argument("--out_dir", default="notes")
     parser.add_argument("--synth", default=None, help="simulated series name, e.g. coupled_0")
+    parser.add_argument("--hidden", type=int, default=None, help="override hidden size (tuning)")
+    parser.add_argument("--lr", type=float, default=None, help="override learning rate (tuning)")
+    parser.add_argument("--tag", default="", help="suffix for the output file name")
+    parser.add_argument("--val_only", action="store_true",
+                        help="tuning mode: train on the first 80%% of the training rows and report forecast MSE on "
+                             "the last 20%%; no test data is touched")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed); np.random.seed(args.seed)
@@ -240,6 +246,15 @@ def main():
     print(f"  Train shape: {X_train.shape}, Test shape: {X_test.shape}", flush=True)
     print(f"  Test anomaly rate: {np.mean(y_test):.3f}", flush=True)
 
+    global HIDDEN_SIZE, LR
+    if args.hidden is not None:
+        HIDDEN_SIZE = args.hidden
+    if args.lr is not None:
+        LR = args.lr
+    if args.val_only:
+        # keep the test set out of tuning entirely: validate on the tail of the training rows
+        n_fit = int(len(X_train) * 0.8)
+        X_train, X_val = X_train[:n_fit], X_train[n_fit:]
     scaler = StandardScaler().fit(X_train)
     X_train_s = scaler.transform(X_train)
     X_test_s = scaler.transform(X_test)
@@ -256,6 +271,14 @@ def main():
     wall = (time.time() - t0) / 60.0
     print(f"Wall-clock training: {wall:.1f} min", flush=True)
 
+    if args.val_only:
+        _, VAL_MSE, VAL_MAE = score_forecast_error_and_metrics(model, scaler.transform(X_val), SEQ_LEN, PRED_LEN)
+        rep = (f"LSTM TUNING (validation only)\nDataset: {args.dataset} {run_id}\nseed={args.seed} hidden={HIDDEN_SIZE} "
+               f"lr={LR} epochs={EPOCHS}\nValidation forecast MSE: {VAL_MSE:.6f}\nValidation forecast MAE: {VAL_MAE:.6f}\n")
+        out = Path(args.out_dir) / f"lstm_val_{args.dataset}_{run_id}_h{HIDDEN_SIZE}_lr{LR:g}_seed{args.seed}.txt"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(rep); print(rep, flush=True)
+        return
     scores, TEST_MSE, TEST_MAE = score_forecast_error_and_metrics(model, X_test_s, SEQ_LEN, PRED_LEN,
                                                                  eval_start=eval_start)
     # Score at index t covers targets t-PRED_LEN+1 .. t, so keep t >= eval_start + PRED_LEN - 1
@@ -280,8 +303,8 @@ Test anomaly rate: {np.mean(y_eval):.3f}
 Scored rows: {len(y_eval)} of {len(y_test)} (evaluation starts at row {cut})
 =============================================================="""
     print("\n" + report, flush=True)
-    out = Path(args.out_dir) / f"lstm_baseline_{args.dataset}_{run_id}_seed{args.seed}.txt"
-    out.parent.mkdir(exist_ok=True)
+    out = Path(args.out_dir) / f"lstm_baseline{args.tag}_{args.dataset}_{run_id}_seed{args.seed}.txt"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report)
     print(f"\nSaved: {out}", flush=True)
 
