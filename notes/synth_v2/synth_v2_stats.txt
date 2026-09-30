@@ -1,0 +1,41 @@
+V2 SIMULATED BENCHMARK, PRE-REGISTERED ANALYSIS
+==========================================================================
+                          auroc                pr_auc                   mae              
+                           mean     std count    mean     std count    mean     std count
+condition   variant                                                                      
+coupled     full         0.7883  0.0519    30  0.3688  0.0821    30  0.3563  0.0199    30
+            no_mswea     0.8082  0.0499    30  0.3607  0.0876    30  0.3491  0.0196    30
+            no_mswea_pm  0.8098  0.0465    30  0.3539  0.0776    30  0.3491  0.0174    30
+independent full         0.9456  0.0161    30  0.5826  0.0993    30  0.3103  0.0183    30
+            no_mswea     0.9405  0.0156    30  0.5509  0.0966    30  0.3152  0.0201    30
+            no_mswea_pm  0.9416  0.0173    30  0.5538  0.0860    30  0.3160  0.0192    30
+
+--- full vs MSWEA-off on coupled
+  full mean 0.7883   no_mswea mean 0.8082
+  mean diff (full - no_mswea) -0.0200  95% CI [-0.0361, -0.0038]  d_z -0.46
+  n 30  full higher 9  no_mswea higher 21  ties 0
+  Wilcoxon W 116.0  p 0.0166  Holm p 0.0222  Z -2.396  r 0.437
+  per-series (n=10): mean -0.0200, 3/10 positive, Wilcoxon p 0.2324
+--- full vs parameter-matched MSWEA-off on coupled
+  full mean 0.7883   no_mswea_pm mean 0.8098
+  mean diff (full - no_mswea_pm) -0.0216  95% CI [-0.0368, -0.0063]  d_z -0.53
+  n 30  full higher 9  no_mswea_pm higher 21  ties 0
+  Wilcoxon W 109.0  p 0.0111  Holm p 0.0222  Z -2.540  r 0.464
+  per-series (n=10): mean -0.0216, 3/10 positive, Wilcoxon p 0.0840
+--- full vs MSWEA-off on independent
+  full mean 0.9456   no_mswea mean 0.9405
+  mean diff (full - no_mswea) +0.0051  95% CI [+0.0034, +0.0068]  d_z +1.11
+  n 30  full higher 25  no_mswea higher 5  ties 0
+  Wilcoxon W 25.5  p 0.0000  Holm p 0.0001  Z +4.258  r 0.777
+  per-series (n=10): mean +0.0051, 9/10 positive, Wilcoxon p 0.0039
+--- full vs parameter-matched MSWEA-off on independent
+  full mean 0.9456   no_mswea_pm mean 0.9416
+  mean diff (full - no_mswea_pm) +0.0040  95% CI [+0.0021, +0.0059]  d_z +0.77
+  n 30  full higher 23  no_mswea_pm higher 7  ties 0
+  Wilcoxon W 63.5  p 0.0005  Holm p 0.0015  Z +3.476  r 0.635
+  per-series (n=10): mean +0.0040, 9/10 positive, Wilcoxon p 0.0117
+
+H2 specificity: matched gain coupled median -0.0138 vs independent +0.0044, Mann-Whitney U 22.0, p 0.0376
+
+VERDICT H1 (MSWEA beats the parameter-matched control on coupled data): False
+VERDICT H2 (the matched gain is larger on coupled than independent data): False

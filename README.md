@@ -26,9 +26,13 @@ The paper does not ablate these components or test on public benchmarks. This re
   - Fusionformer forecasts with lower MAE than an LSTM baseline on both benchmarks.
   - On SKAB, removing MSWEA or SWSE lowers forecast error further.
 - **Simulated benchmark** (clearly labelled simulated data, generator in `synth_generator.py`):
-  - MSWEA passes its pre-specified test when anomalies break cross-channel relationships: +0.017 AUROC, Holm p = 0.005.
-  - Against a parameter-matched control added afterwards, the gain falls to +0.011 and is not significant.
-  - Most of the apparent benefit is capacity.
+  - In the dissertation (v1, 5 series), MSWEA passed its pre-specified test on cross-channel anomalies: +0.017 AUROC, Holm p = 0.005.
+  - Against a parameter-matched control added afterwards, that gain fell to +0.011 and was not significant.
+- **v2 (after submission, pre-registered before running; see [RESULTS_v2.md](RESULTS_v2.md)):**
+  - 10 new series, with the matched control fixed in advance.
+  - The coupled-condition gain did **not** replicate. MSWEA was worse than the matched control there (-0.022, Holm p = 0.022).
+  - MSWEA gave a small, consistent gain on independent channels (+0.004, 9 of 10 series).
+  - The coupling hypothesis is not supported.
 
 ## Repository layout
 
@@ -60,6 +64,7 @@ bash run_skab_heldout.sh           # SKAB, held-out scoring, all variants + LSTM
 bash run_skab_tail_holdout.sh      # second SKAB design
 bash run_synth.sh                  # simulated benchmark
 bash run_synth_pm.sh               # parameter-matched MSWEA-off control
+bash run_synth_v2.sh               # v2: pre-registered replication (10 new series)
 ```
 
 SMD runs are the slowest: roughly 10 minutes each on an RTX 4090 and up to 45 minutes on an Apple M-series Mac.
