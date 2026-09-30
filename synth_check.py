@@ -36,9 +36,15 @@ def smooth(x, k=24):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--first_seed", type=int, default=0)
+    ap.add_argument("--n", type=int, default=5)
+    ap.add_argument("--out_dir", default="notes/synth")
+    args = ap.parse_args()
     rows = []
     for cond in ("coupled", "independent"):
-        for u in range(5):
+        for u in range(args.first_seed, args.first_seed + args.n):
             z = np.load(Path("datasets/SYNTH") / f"{cond}_{u}.npz")
             Xtr, Xte, y = z["X_train"], z["X_test"], z["y_test"]
             mu, sd = Xtr.mean(0), Xtr.std(0)
@@ -64,8 +70,8 @@ def main():
             rows.append(dict(condition=cond, unit=u, anomaly_rate=round(float(y.mean()), 3),
                              **{k: round(v, 4) for k, v in out.items()}))
     df = pd.DataFrame(rows)
-    Path("notes/synth").mkdir(parents=True, exist_ok=True)
-    df.to_csv("notes/synth/reference_detectors.csv", index=False)
+    Path(args.out_dir).mkdir(parents=True, exist_ok=True)
+    df.to_csv(Path(args.out_dir) / "reference_detectors.csv", index=False)
     print(df.to_string(index=False))
     print(df.groupby("condition").mean(numeric_only=True).round(3).to_string())
 

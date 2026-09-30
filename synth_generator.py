@@ -24,6 +24,7 @@ structure carries no information.
 
 Usage:
     python3 synth_generator.py          # writes datasets/SYNTH/{coupled,independent}_{0..4}.npz
+    python3 synth_generator.py --first_seed 100 --n 10   # v2 series 100..109
 
 Author: Nachiket Magadum
 MSc AI dissertation, Brunel University London, 2026.
@@ -113,10 +114,15 @@ def make_independent(seed):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--first_seed", type=int, default=0)
+    ap.add_argument("--n", type=int, default=5, help="series per condition")
+    args = ap.parse_args()
     out = Path("datasets/SYNTH")
     out.mkdir(parents=True, exist_ok=True)
     for cond, fn in (("coupled", make_coupled), ("independent", make_independent)):
-        for seed in range(5):
+        for seed in range(args.first_seed, args.first_seed + args.n):
             X_train, X_test, y_test = fn(seed)
             np.savez(out / f"{cond}_{seed}.npz", X_train=X_train, X_test=X_test, y_test=y_test)
             print(f"{cond}_{seed}: train {X_train.shape}, test {X_test.shape}, "
