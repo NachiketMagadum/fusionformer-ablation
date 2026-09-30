@@ -1,0 +1,53 @@
+TUNED LSTM vs FUSIONFORMER (v2 simulated series)
+==========================================================================
+  condition  hidden      lr    mean  count
+    coupled      64 0.00015 0.90781     10
+    coupled      64 0.00100 0.96016     10
+    coupled      64 0.00300 1.07860     10
+    coupled     128 0.00015 0.93605     10
+    coupled     128 0.00100 0.95894     10
+    coupled     128 0.00300 1.29181     10
+    coupled     256 0.00015 0.93722     10
+    coupled     256 0.00100 0.97922     10
+    coupled     256 0.00300 1.60664     10
+independent      64 0.00015 0.95310     10
+independent      64 0.00100 0.91508     10
+independent      64 0.00300 0.92293     10
+independent     128 0.00015 0.93604     10
+independent     128 0.00100 0.90666     10
+independent     128 0.00300 0.91271     10
+independent     256 0.00015 0.92919     10
+independent     256 0.00100 0.87122     10
+independent     256 0.00300 0.96010     10
+
+coupled: chosen hidden=64 lr=0.00015 (mean validation MSE 0.90781)
+independent: chosen hidden=256 lr=0.001 (mean validation MSE 0.87122)
+
+                         auroc                   mae              
+                          mean     std count    mean     std count
+condition   variant                                               
+coupled     full        0.7883  0.0519    30  0.3563  0.0199    30
+            lstm_tuned  0.4866  0.0721    30  0.7811  0.0238    30
+independent full        0.9456  0.0161    30  0.3103  0.0183    30
+            lstm_tuned  0.4542  0.0367    30  0.8182  0.0179    30
+
+--- MAE tuned LSTM vs Fusionformer on coupled (positive = Fusionformer lower error)
+  lstm_tuned mean 0.7811   full mean 0.3563
+  mean diff (lstm_tuned - full) +0.4249  95% CI [+0.4166, +0.4331]  d_z +19.30
+  n 30  lstm_tuned higher 30  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Z +4.782  r 0.873
+--- MAE tuned LSTM vs Fusionformer on independent (positive = Fusionformer lower error)
+  lstm_tuned mean 0.8182   full mean 0.3103
+  mean diff (lstm_tuned - full) +0.5079  95% CI [+0.4955, +0.5203]  d_z +15.31
+  n 30  lstm_tuned higher 30  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Z +4.782  r 0.873
+--- AUROC Fusionformer vs tuned LSTM on coupled
+  full mean 0.7883   lstm_tuned mean 0.4866
+  mean diff (full - lstm_tuned) +0.3017  95% CI [+0.2651, +0.3383]  d_z +3.08
+  n 30  full higher 30  lstm_tuned higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+--- AUROC Fusionformer vs tuned LSTM on independent
+  full mean 0.9456   lstm_tuned mean 0.4542
+  mean diff (full - lstm_tuned) +0.4914  95% CI [+0.4776, +0.5052]  d_z +13.29
+  n 30  full higher 30  lstm_tuned higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873

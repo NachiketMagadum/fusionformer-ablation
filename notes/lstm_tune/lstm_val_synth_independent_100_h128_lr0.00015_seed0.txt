@@ -1,0 +1,5 @@
+LSTM TUNING (validation only)
+Dataset: synth independent_100
+seed=0 hidden=128 lr=0.00015 epochs=15
+Validation forecast MSE: 0.942730
+Validation forecast MAE: 0.853118

@@ -1,0 +1,22 @@
+  condition  hidden      lr    mean  count
+    coupled      64 0.00015 0.90781     10
+    coupled      64 0.00100 0.96016     10
+    coupled      64 0.00300 1.07860     10
+    coupled     128 0.00015 0.93605     10
+    coupled     128 0.00100 0.95894     10
+    coupled     128 0.00300 1.29181     10
+    coupled     256 0.00015 0.93722     10
+    coupled     256 0.00100 0.97922     10
+    coupled     256 0.00300 1.60664     10
+independent      64 0.00015 0.95310     10
+independent      64 0.00100 0.91508     10
+independent      64 0.00300 0.92293     10
+independent     128 0.00015 0.93604     10
+independent     128 0.00100 0.90666     10
+independent     128 0.00300 0.91271     10
+independent     256 0.00015 0.92919     10
+independent     256 0.00100 0.87122     10
+independent     256 0.00300 0.96010     10
+
+coupled: chosen hidden=64 lr=0.00015 (mean validation MSE 0.90781)
+independent: chosen hidden=256 lr=0.001 (mean validation MSE 0.87122)

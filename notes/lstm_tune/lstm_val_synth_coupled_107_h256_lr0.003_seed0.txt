@@ -1,0 +1,5 @@
+LSTM TUNING (validation only)
+Dataset: synth coupled_107
+seed=0 hidden=256 lr=0.003 epochs=15
+Validation forecast MSE: 1.362296
+Validation forecast MAE: 0.948952

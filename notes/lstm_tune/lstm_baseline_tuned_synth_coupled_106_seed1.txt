@@ -1,0 +1,16 @@
+LSTM FORECASTING BASELINE
+==============================================================
+Dataset: synth coupled_106
+Model: LSTM forecasting (T=96, tau=24), seed=1
+Hyperparameters: hidden=64, num_layers=2, dropout=0.1
+LSTM params: 64,704
+Training: 15 epochs, batch 64, lr=0.00015
+Wall-clock: 0.0 min on mps
+
+Test forecast MSE: 0.924466
+Test forecast MAE: 0.793490
+Test AUROC: 0.3870
+Test PR-AUC: 0.0903
+Test anomaly rate: 0.101
+Scored rows: 2000 of 2000 (evaluation starts at row 0)
+==============================================================

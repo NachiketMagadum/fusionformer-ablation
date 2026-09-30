@@ -39,3 +39,48 @@ The design, analysis script and runner were committed and pushed before any v2 m
 - **Lesson:** five series per condition were too few to judge an effect of about 0.01-0.02 AUROC, given how much it varies between series.
 
 Full output: `notes/synth_v2/synth_v2_stats.txt`, per-run results `notes/synth_v2/all_runs_synth_v2.csv`.
+
+---
+
+# Cluster-aware re-analysis (all ablations)
+
+Seeds on the same machine, file or series are not independent. `analyse_mixed.py` re-estimates every comparison in
+two ways: per-unit means (seeds averaged first) and a mixed model with a random intercept per unit. Full table:
+`notes/mixed_model_stats.txt`.
+
+- **SMD and SKAB (both designs):** no component effect is distinguishable from zero. Every per-unit interval and
+  every mixed-model interval includes 0. With 3 or 5 units these analyses have little power, which is itself the point.
+- **Simulated v1 coupled:** the mixed model gives +0.017 (p = 0.017), but the per-unit test does not (p = 0.125, n = 5).
+  The v2 replication then reversed it.
+- **Simulated v2 coupled:** the negative MSWEA effect (-0.020 / -0.022 against the matched control) is **not**
+  significant once series are treated as the unit (mixed p = 0.13 / 0.08, per-series p = 0.23 / 0.08).
+  - The pre-registered pair-level test (Holm p = 0.022) is driven by between-series variation, mostly series 101.
+- **Independent-channel data:** the one effect that holds everywhere is a small gain. It is +0.0035 in v1 and
+  +0.0051 in v2, and it survives parameter matching (+0.0031 / +0.0040).
+  - v2: 9 of 10 series positive, mixed-model p = 0.004 against the matched control.
+
+**Summary:** the most defensible statement is that MSWEA gives a small, consistent gain of about 0.004 AUROC on the
+independent-channel simulated series. There is no reliable cross-channel-specific effect, in either direction.
+
+# Tuned LSTM baseline (pre-registered, commit `d97806c`)
+
+- **Grid:** hidden size {64, 128, 256} x learning rate {1.5e-4, 1e-3, 3e-3}, selected on validation MSE from the last 20%
+  of the training rows only (`notes/lstm_tune/tuning_grid.txt`).
+- **Chosen configurations:**
+  - coupled: hidden 64, lr 1.5e-4
+  - independent: hidden 256, lr 1e-3
+
+**Results on the v2 series (30 pairs per condition):**
+
+| Condition | Fusionformer AUROC | Tuned LSTM AUROC | Holm p | Fusionformer MAE | Tuned LSTM MAE |
+|---|---|---|---|---|---|
+| Coupled | 0.788 | 0.487 | < 0.001 | 0.356 | 0.781 |
+| Independent | 0.946 | 0.454 | < 0.001 | 0.310 | 0.818 |
+
+**Tuning did not rescue the LSTM.**
+- Every configuration in the grid had a validation MSE of 0.87-1.61 on standardised data. That is no better than
+  forecasting the mean, whose MSE is about 1.
+- So within this grid the LSTM never learns the simulated dynamics, and its AUROC stays at chance.
+- The limitation looks like the baseline's design and training budget (last-state linear head, 15 epochs) rather
+  than its hidden size or learning rate. A stronger recurrent baseline would need a different decoder or longer
+  training, which was not tested here.

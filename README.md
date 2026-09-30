@@ -33,6 +33,10 @@ The paper does not ablate these components or test on public benchmarks. This re
   - The coupled-condition gain did **not** replicate. MSWEA was worse than the matched control there (-0.022, Holm p = 0.022).
   - MSWEA gave a small, consistent gain on independent channels (+0.004, 9 of 10 series).
   - The coupling hypothesis is not supported.
+- **Cluster-aware re-analysis and tuned LSTM** (see [RESULTS_v2.md](RESULTS_v2.md)):
+  - Treating machines, files or series as the unit, no SMD or SKAB effect differs from zero.
+  - The only robust MSWEA effect is a small gain (about +0.004 AUROC) on independent-channel simulated data.
+  - A pre-registered tuning of the LSTM baseline (validation-only selection) did not lift it above chance.
 
 ## Repository layout
 
@@ -65,6 +69,8 @@ bash run_skab_tail_holdout.sh      # second SKAB design
 bash run_synth.sh                  # simulated benchmark
 bash run_synth_pm.sh               # parameter-matched MSWEA-off control
 bash run_synth_v2.sh               # v2: pre-registered replication (10 new series)
+bash run_lstm_tune.sh              # pre-registered LSTM tuning on the v2 series
+python3 analyse_mixed.py           # cluster-aware re-analysis of every ablation (needs statsmodels)
 ```
 
 SMD runs are the slowest: roughly 10 minutes each on an RTX 4090 and up to 45 minutes on an Apple M-series Mac.
