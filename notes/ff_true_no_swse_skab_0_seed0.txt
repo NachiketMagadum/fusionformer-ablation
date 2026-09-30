@@ -1,0 +1,16 @@
+FAITHFUL FUSIONFORMER RESULTS (per Wang et al. 2025)
+==============================================================
+Dataset: skab 0
+Model: Fusionformer forecasting (T=96, tau=24), seed=0
+Hyperparameters (paper-matched): d_model=252, n_heads=6, L_seg=4, N_enc=1, N_dec=1
+Fusionformer params: 3,835,968, Discriminator params: 139,649
+Training: 15 epochs, batch 64, lr_F=0.00015, lr_D=7.5e-05, adv weight=0.0
+Wall-clock: 1.3 min on mps
+
+Test forecast MSE: 5.767632
+Test forecast MAE: 1.560917
+Test AUROC: 0.4533
+Test PR-AUC: 0.7863
+Test anomaly rate: 0.699
+Scored rows: 574 of 1147 (evaluation starts at row 573)
+==============================================================

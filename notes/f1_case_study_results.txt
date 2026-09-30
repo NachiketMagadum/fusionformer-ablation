@@ -1,0 +1,12 @@
+F1 CASE STUDY RESULTS - Real experiment run
+==================================================
+Session: Hamilton, 2023 British Grand Prix (race)
+Samples: 51240 (~10 Hz), Race length: 85.4 min
+Features: ['Speed', 'RPM', 'Throttle', 'nGear', 'DRS', 'Brake']
+Model: Fusionformer FAM, 37,100 params, 50 epochs on mps
+Trained on first 25% (12810 samples), scored full race
+
+95th percentile threshold: 0.45497
+Samples above threshold: 2562 (5.0%)
+Max error: 1.21072 at minute 62.2
+Mean error, first 25%: 0.11439

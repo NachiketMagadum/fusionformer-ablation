@@ -1,0 +1,6 @@
+datasets/*
+!datasets/README.md
+__pycache__/
+*.pyc
+*.log
+.DS_Store

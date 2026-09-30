@@ -1,0 +1,13 @@
+FAITHFUL FUSIONFORMER RESULTS (per Wang et al. 2025)
+==============================================================
+Dataset: smd machine-1-1
+Model: Fusionformer forecasting (T=96, tau=24), seed=0
+Hyperparameters (paper-matched): d_model=256, n_heads=8, L_seg=32, N_enc=4, N_dec=3
+Fusionformer params: 11,112,472, Discriminator params: 600,449
+Training: 30 epochs, batch 32, lr_F=0.0005, lr_D=0.00025, adv weight=0.0
+Wall-clock: 105.8 min on mps
+
+Test AUROC: 0.9230
+Test PR-AUC: 0.6148
+Test anomaly rate: 0.095
+==============================================================

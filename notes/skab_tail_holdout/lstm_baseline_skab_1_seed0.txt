@@ -1,0 +1,16 @@
+LSTM FORECASTING BASELINE
+==============================================================
+Dataset: skab 1
+Model: LSTM forecasting (T=96, tau=24), seed=0
+Hyperparameters: hidden=128, num_layers=2, dropout=0.1
+LSTM params: 227,520
+Training: 15 epochs, batch 64, lr=0.00015
+Wall-clock: 0.0 min on mps
+
+Test forecast MSE: 2.635595
+Test forecast MAE: 1.162451
+Test AUROC: 0.5863
+Test PR-AUC: 0.6061
+Test anomaly rate: 0.605
+Scored rows: 665 of 1145 (evaluation starts at row 480)
+==============================================================

@@ -1,0 +1,58 @@
+==========================================================================
+SMD paired MSWEA ablation (n = 9)
+==========================================================================
+  full            mean 0.8905   std 0.0653
+  no_mswea        mean 0.8856   std 0.0711
+  Mean paired diff (full - no_mswea): +0.0049
+  n pairs: 9   full wins: 7   no_mswea wins: 2   ties: 0
+  Wilcoxon W: 8.000
+  p-value (two-sided): 0.0977
+  Rosenthal effect size r: 0.552  (large)
+  Verdict: not significant (p>=0.05)
+
+  --- per-pair breakdown ---
+  machine-1-1          seed 0   full 0.9427   no_mswea 0.9377   diff +0.0050
+  machine-1-1          seed 1   full 0.9336   no_mswea 0.9414   diff -0.0078
+  machine-1-1          seed42   full 0.9406   no_mswea 0.9428   diff -0.0022
+  machine-1-4          seed 0   full 0.9346   no_mswea 0.9326   diff +0.0020
+  machine-1-4          seed 1   full 0.9331   no_mswea 0.9292   diff +0.0039
+  machine-1-4          seed42   full 0.9351   no_mswea 0.9308   diff +0.0043
+  machine-2-1          seed 0   full 0.7976   no_mswea 0.7864   diff +0.0112
+  machine-2-1          seed 1   full 0.8012   no_mswea 0.7858   diff +0.0154
+  machine-2-1          seed42   full 0.7963   no_mswea 0.7836   diff +0.0127
+
+==========================================================================
+SKAB paired MSWEA ablation (n = 15)
+==========================================================================
+  full            mean 0.8781   std 0.0531
+  no_mswea        mean 0.8640   std 0.0496
+  Mean paired diff (full - no_mswea): +0.0141
+  n pairs: 15   full wins: 12   no_mswea wins: 3   ties: 0
+  Wilcoxon W: 13.000
+  p-value (two-sided): 0.0076
+  Rosenthal effect size r: 0.689  (large)
+  Verdict: SIGNIFICANT (p<0.05)
+
+  --- per-pair breakdown ---
+  0                    seed 0   full 0.8618   no_mswea 0.8506   diff +0.0112
+  0                    seed 1   full 0.8610   no_mswea 0.8502   diff +0.0108
+  0                    seed42   full 0.8644   no_mswea 0.8526   diff +0.0118
+  1                    seed 0   full 0.8607   no_mswea 0.8616   diff -0.0009
+  1                    seed 1   full 0.8526   no_mswea 0.8651   diff -0.0125
+  1                    seed42   full 0.8569   no_mswea 0.8608   diff -0.0039
+  2                    seed 0   full 0.8996   no_mswea 0.8626   diff +0.0370
+  2                    seed 1   full 0.9211   no_mswea 0.8565   diff +0.0646
+  2                    seed42   full 0.8995   no_mswea 0.8625   diff +0.0370
+  3                    seed 0   full 0.9603   no_mswea 0.9541   diff +0.0062
+  3                    seed 1   full 0.9669   no_mswea 0.9504   diff +0.0165
+  3                    seed42   full 0.9562   no_mswea 0.9457   diff +0.0105
+  4                    seed 0   full 0.8057   no_mswea 0.7928   diff +0.0129
+  4                    seed 1   full 0.8011   no_mswea 0.7957   diff +0.0054
+  4                    seed42   full 0.8040   no_mswea 0.7987   diff +0.0053
+
+==========================================================================
+CROSS-BENCHMARK SUMMARY
+==========================================================================
+benchmark    n     full    no_mswea     diff        p       r
+SMD          9   0.8905      0.8856  +0.0049   0.0977   0.552
+SKAB        15   0.8781      0.8640  +0.0141   0.0076   0.689
