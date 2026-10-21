@@ -105,8 +105,12 @@ def make_forecast_pairs(X, seq_len, pred_len):
 
 def train_fusionformer_adversarial(model, disc, X_train, seq_len, pred_len,
                                    epochs=EPOCHS, batch_size=BATCH_SIZE,
-                                   verbose=True):
-    """Train Fusionformer with combined prediction MSE + adversarial loss."""
+                                   verbose=True, adv_only=False):
+    """Train Fusionformer with combined prediction MSE + adversarial loss.
+
+    adv_only=True follows the paper's objective as I read eq 14 / Algorithm 1:
+    the forecaster is updated on the adversarial loss alone (no prediction
+    loss, no warm-up), alternating with one discriminator step per batch."""
     model = model.to(DEVICE)
     disc = disc.to(DEVICE)
     opt_F = torch.optim.AdamW(model.parameters(), lr=LR_F, weight_decay=1e-5)
@@ -132,7 +136,7 @@ def train_fusionformer_adversarial(model, disc, X_train, seq_len, pred_len,
             zeros = torch.zeros(B, device=DEVICE)
 
             # --- Update D only if adversarial is active and past warmup ---
-            use_adv = LAMBDA_ADV > 0 and epoch >= WARMUP_EPOCHS
+            use_adv = adv_only or (LAMBDA_ADV > 0 and epoch >= WARMUP_EPOCHS)
             if use_adv:
                 with torch.no_grad():
                     y_pred = model(x_batch)
@@ -154,7 +158,7 @@ def train_fusionformer_adversarial(model, disc, X_train, seq_len, pred_len,
                 y_fake = torch.cat([x_batch, y_pred], dim=1)
                 d_fake_for_g = disc(y_fake).clamp(1e-7, 1 - 1e-7)
                 adv_loss = bce(d_fake_for_g, ones)
-                f_loss = pred_loss + LAMBDA_ADV * adv_loss
+                f_loss = adv_loss if adv_only else pred_loss + LAMBDA_ADV * adv_loss
             else:
                 f_loss = pred_loss
             opt_F.zero_grad()
@@ -190,6 +194,20 @@ def score_forecast_error_and_metrics(model, X_test, seq_len, pred_len, batch_siz
             all_sq.append(((yp - yb) ** 2).mean(dim=(1, 2)).cpu().numpy())
             all_ae.append((yp - yb).abs().mean(dim=(1, 2)).cpu().numpy())
     return np.concatenate(all_sq), np.concatenate(all_ae)
+
+
+def per_channel_window_errors(model, X, seq_len, pred_len, batch_size=256):
+    """Per-window, per-channel forecast MSE (mean over the horizon): array (N_windows, D).
+    Used only when --save_errors is given, for the per-channel scoring analysis."""
+    model.eval()
+    inputs, targets = make_forecast_pairs(X, seq_len, pred_len)
+    out = []
+    with torch.no_grad():
+        for i in range(0, len(inputs), batch_size):
+            xb = torch.tensor(inputs[i:i + batch_size], dtype=torch.float32, device=DEVICE)
+            yb = torch.tensor(targets[i:i + batch_size], dtype=torch.float32, device=DEVICE)
+            out.append(((model(xb) - yb) ** 2).mean(dim=1).cpu().numpy())
+    return np.concatenate(out).astype(np.float32)
 
 
 def score_forecast_error(model, X_test, seq_len, pred_len, batch_size=128):
@@ -250,12 +268,21 @@ def main():
     parser.add_argument("--synth", default=None, help="simulated series name, e.g. coupled_0")
     parser.add_argument("--lambda_adv", type=float, default=None, help="Override LAMBDA_ADV")
     parser.add_argument("--warmup_epochs", type=int, default=None)
-    parser.add_argument("--variant", choices=["full", "no_mswea", "no_mswea_pm", "no_swse", "adv_on"],
+    parser.add_argument("--variant", choices=["full", "no_mswea", "no_mswea_pm", "no_swse", "adv_on",
+                                              "no_mswaa", "no_mswaa_pm", "no_fam", "no_fam_pm", "adv_only"],
                         default="full",
-                        help="full = SWSE+MSWAA+MSWEA (paper); no_mswea = drop intervariable branch; no_swse = per-timestep tokens")
+                        help="full = SWSE+MSWAA+MSWEA (paper); no_mswea / no_mswaa = drop the intervariable / "
+                             "intravariable branch; no_fam = drop both attention branches; *_pm = same with d_model "
+                             "raised (via --d_model) to match the full model's parameter count; no_swse = per-timestep "
+                             "tokens; adv_on = Huber + 0.01 x adversarial; adv_only = adversarial loss alone (paper)")
+    parser.add_argument("--epochs", type=int, default=None, help="override EPOCHS (smoke tests only)")
+    parser.add_argument("--save_errors", action="store_true",
+                        help="also save per-window per-channel errors on the training and test windows (.npz)")
     args = parser.parse_args()
 
-    global LAMBDA_ADV, WARMUP_EPOCHS, D_MODEL
+    global LAMBDA_ADV, WARMUP_EPOCHS, D_MODEL, EPOCHS
+    if args.epochs is not None:
+        EPOCHS = args.epochs
     if args.d_model is not None:
         D_MODEL = args.d_model
     if args.lambda_adv is not None:
@@ -297,17 +324,20 @@ def main():
 
     use_swse = args.variant != "no_swse"
     # no_mswea_pm = MSWEA removed, d_model raised (via --d_model) to match the full model's parameter count
-    use_mswea = args.variant not in ("no_mswea", "no_mswea_pm")
+    use_mswea = args.variant not in ("no_mswea", "no_mswea_pm", "no_fam", "no_fam_pm")
+    use_mswaa = args.variant not in ("no_mswaa", "no_mswaa_pm", "no_fam", "no_fam_pm")
+    adv_only = args.variant == "adv_only"
     # Per-variant batch size override to prevent MPS OOM on larger variants
     variant_batch = {"full": 64, "no_mswea": 64, "no_mswea_pm": 64, "no_swse": 24, "adversarial": 48}
     effective_batch = variant_batch.get(args.variant, BATCH_SIZE)
-    print(f"Variant: {args.variant}  (use_swse={use_swse}, use_mswea={use_mswea})")
+    print(f"Variant: {args.variant}  (use_swse={use_swse}, use_mswaa={use_mswaa}, use_mswea={use_mswea}, "
+          f"adv_only={adv_only})")
     print(f"Effective batch size: {effective_batch}")
     model = Fusionformer(
         seq_len=SEQ_LEN, pred_len=PRED_LEN, n_vars=n_vars,
         segment_len=SEGMENT_LEN, d_model=D_MODEL, n_heads=N_HEADS,
         n_enc=N_ENC, n_dec=N_DEC, dropout=0.1,
-        use_swse=use_swse, use_mswea=use_mswea,
+        use_swse=use_swse, use_mswea=use_mswea, use_mswaa=use_mswaa,
     )
     disc = FusionformerDiscriminator(SEQ_LEN, PRED_LEN, n_vars)
     n_params = sum(p.numel() for p in model.parameters())
@@ -319,7 +349,8 @@ def main():
     print(f"  d_model={D_MODEL}, n_heads={N_HEADS}, L_seg={SEGMENT_LEN}, "
           f"T={SEQ_LEN}, tau={PRED_LEN}")
     t0 = time.time()
-    train_fusionformer_adversarial(model, disc, X_train_s, SEQ_LEN, PRED_LEN, batch_size=effective_batch)
+    train_fusionformer_adversarial(model, disc, X_train_s, SEQ_LEN, PRED_LEN, epochs=EPOCHS,
+                                   batch_size=effective_batch, adv_only=adv_only)
     train_min = (time.time() - t0) / 60
     print(f"Training took {train_min:.1f} min")
 
@@ -344,7 +375,8 @@ Dataset: {args.dataset} {run_id}
 Model: Fusionformer forecasting (T={SEQ_LEN}, tau={PRED_LEN}), seed={args.seed}
 Hyperparameters (paper-matched): d_model={D_MODEL}, n_heads={N_HEADS}, L_seg={SEGMENT_LEN}, N_enc={N_ENC}, N_dec={N_DEC}
 Fusionformer params: {n_params:,}, Discriminator params: {n_params_d:,}
-Training: {EPOCHS} epochs, batch {BATCH_SIZE}, lr_F={LR_F}, lr_D={LR_D}, adv weight={LAMBDA_ADV}
+Training: {EPOCHS} epochs, batch {effective_batch}, lr_F={LR_F}, lr_D={LR_D}, adv weight={LAMBDA_ADV}
+Objective: {"adversarial loss only (paper eq 14)" if adv_only else "Huber prediction loss" + (f" + {LAMBDA_ADV} x adversarial" if LAMBDA_ADV > 0 else "")}
 Wall-clock: {train_min:.1f} min on {DEVICE}
 
 Test forecast MSE: {TEST_MSE:.6f}
@@ -357,9 +389,16 @@ Scored rows: {len(y_eval)} of {len(y_test)} (evaluation starts at row {eval_star
 """
     print("\n" + report)
     out = Path(args.out_dir) / f"ff_true_{args.variant}_{args.dataset}_{run_id}_seed{args.seed}.txt"
-    out.parent.mkdir(exist_ok=True)
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report)
     print(f"Saved: {out}")
+    if args.save_errors:
+        err = out.with_suffix(".npz")
+        np.savez_compressed(err,
+                            train=per_channel_window_errors(model, X_train_s, SEQ_LEN, PRED_LEN),
+                            test=per_channel_window_errors(model, X_test_s, SEQ_LEN, PRED_LEN),
+                            y_test=np.asarray(y_test), eval_start=eval_start, n_test_rows=len(X_test_s))
+        print(f"Saved: {err}")
 
 
 if __name__ == "__main__":

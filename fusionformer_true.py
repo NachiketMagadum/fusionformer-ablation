@@ -19,8 +19,8 @@ Paper hyperparameters (Section IV-D):
   - learning_rate from {5e-3, 1e-3, 5e-4, 1e-4, 5e-5, 1e-5} by grid search
   - L_seg, N0, N1: swept in the sensitivity analysis
 
-The use_swse and use_mswea flags build the SWSE-off and MSWEA-off ablation
-variants. Training and scoring are in train_ff_forecast_and_score_anomaly.py.
+The use_swse, use_mswea and use_mswaa flags build the ablation variants
+(SWSE-off, MSWEA-off, MSWAA-off, and FAM-off = both attention branches off). Training and scoring are in train_ff_forecast_and_score_anomaly.py.
 
 Author: Nachiket Magadum
 MSc AI dissertation, Brunel University London, 2026.
@@ -192,23 +192,35 @@ class FusionformerBlock(nn.Module):
     modules, which include two key sub-modules: the multihead FAM layer and
     the fully connected feed-forward network." Where FAM = MSWAA + MSWEA.
 
-    Ablation flag `use_mswea`: if False, drops the intervariable attention branch,
-    keeping only MSWAA + FFN. This is the honest MSWEA ablation for the study.
+    Ablation flags:
+      use_mswea=False              drops the intervariable branch (MSWEA + its FFN): MSWAA -> FFN
+      use_mswaa=False              drops the intravariable branch (MSWAA + its FFN): MSWEA -> FFN
+      both False (FAM-off)         no attention at all; one FFN is kept so the block
+                                   still has a non-linear sub-layer: FFN
+    Modules are created in the same order as before for the full and MSWEA-off
+    models, so their initialisation for a given seed is unchanged.
     """
 
     def __init__(self, n_segments: int, d_model: int, n_heads: int,
-                 ff_hidden: int, dropout: float = 0.1, use_mswea: bool = True):
+                 ff_hidden: int, dropout: float = 0.1, use_mswea: bool = True,
+                 use_mswaa: bool = True):
         super().__init__()
-        self.mswaa = MSWAA(d_model, n_heads, dropout)
-        self.ffn1 = PositionWiseFFN(d_model, ff_hidden, dropout)
+        self.use_mswaa = use_mswaa
         self.use_mswea = use_mswea
+        self.keep_ffn1 = use_mswaa or not use_mswea
+        if use_mswaa:
+            self.mswaa = MSWAA(d_model, n_heads, dropout)
+        if self.keep_ffn1:
+            self.ffn1 = PositionWiseFFN(d_model, ff_hidden, dropout)
         if use_mswea:
             self.mswea = MSWEA(d_model, n_heads, dropout)
             self.ffn2 = PositionWiseFFN(d_model, ff_hidden, dropout)
 
     def forward(self, u: torch.Tensor) -> torch.Tensor:
-        u = self.mswaa(u)   # intravariable attention with residual+LN
-        u = self.ffn1(u)    # FFN with residual+LN
+        if self.use_mswaa:
+            u = self.mswaa(u)   # intravariable attention with residual+LN
+        if self.keep_ffn1:
+            u = self.ffn1(u)    # FFN with residual+LN
         if self.use_mswea:
             u = self.mswea(u)   # intervariable attention with residual+LN
             u = self.ffn2(u)    # FFN with residual+LN
@@ -243,7 +255,7 @@ class Fusionformer(nn.Module):
                  segment_len: int = 4, d_model: int = 252, n_heads: int = 6,
                  ff_hidden: int = None, n_enc: int = 2, n_dec: int = 1,
                  dropout: float = 0.1, use_swse: bool = True,
-                 use_mswea: bool = True):
+                 use_mswea: bool = True, use_mswaa: bool = True):
         # NOTE: paper reports d_model=256 with n_heads=6, but 256 is not
         # divisible by 6. We use d_model=252 (nearest multiple of 6 below 256)
         # to keep n_heads=6 as the paper specifies. This 1.6% dimension
@@ -266,6 +278,7 @@ class Fusionformer(nn.Module):
 
         self.use_swse = use_swse
         self.use_mswea = use_mswea
+        self.use_mswaa = use_mswaa
 
         if use_swse:
             self.swse = SWSE(seq_len, n_vars, segment_len, d_model)
@@ -279,11 +292,11 @@ class Fusionformer(nn.Module):
             )
 
         self.encoder = nn.ModuleList([
-            FusionformerBlock(self.n_segments, d_model, n_heads, ff_hidden, dropout, use_mswea)
+            FusionformerBlock(self.n_segments, d_model, n_heads, ff_hidden, dropout, use_mswea, use_mswaa)
             for _ in range(n_enc)
         ])
         self.decoder = nn.ModuleList([
-            FusionformerBlock(self.n_segments, d_model, n_heads, ff_hidden, dropout, use_mswea)
+            FusionformerBlock(self.n_segments, d_model, n_heads, ff_hidden, dropout, use_mswea, use_mswaa)
             for _ in range(n_dec)
         ])
 

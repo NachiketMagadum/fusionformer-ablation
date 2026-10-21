@@ -37,6 +37,11 @@ The paper does not ablate these components or test on public benchmarks. This re
   - Treating machines, files or series as the unit, no SMD or SKAB effect differs from zero.
   - The only robust MSWEA effect is a small gain (about +0.004 AUROC) on independent-channel simulated data.
   - A pre-registered tuning of the LSTM baseline (validation-only selection) did not lift it above chance.
+- **v3 (pre-registered, in progress; design in [notes/v3/design_v3.md](notes/v3/design_v3.md)):**
+  - MSWAA-off and FAM-off ablations, with parameter-matched controls.
+  - Per-channel normalised scoring on SMD, checked against the naive floor.
+  - A seq2seq LSTM baseline with early stopping.
+  - The paper's adversarial-only training objective.
 
 ## Repository layout
 
@@ -71,6 +76,8 @@ bash run_synth_pm.sh               # parameter-matched MSWEA-off control
 bash run_synth_v2.sh               # v2: pre-registered replication (10 new series)
 bash run_lstm_tune.sh              # pre-registered LSTM tuning on the v2 series
 python3 analyse_mixed.py           # cluster-aware re-analysis of every ablation (needs statsmodels)
+bash run_v3_mac.sh                 # v3: MSWAA-off, FAM-off, adversarial-only, seq2seq LSTM (SKAB + simulated)
+bash run_v3_smd.sh                 # v3: SMD per-channel scoring and SMD ablations (GPU recommended)
 ```
 
 SMD runs are the slowest: roughly 10 minutes each on an RTX 4090 and up to 45 minutes on an Apple M-series Mac.
