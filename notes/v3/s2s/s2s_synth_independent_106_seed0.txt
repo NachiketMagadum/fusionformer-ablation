@@ -1,0 +1,17 @@
+LSTM SEQ2SEQ BASELINE (v3)
+==============================================================
+Dataset: synth independent_106
+Model: LSTM encoder-decoder (T=96, tau=24), seed=0
+Hyperparameters: hidden=128, layers=2, lr=0.0003, batch=64
+Params: 406,536
+Training: early stopping, best epoch 5 of 15 (max 100, patience 10)
+Validation forecast MSE: 0.987528
+Wall-clock: 0.3 min on mps
+
+Test forecast MSE: 0.972151
+Test forecast MAE: 0.866684
+Test AUROC: 0.3954
+Test PR-AUC: 0.0998
+Test anomaly rate: 0.108
+Scored rows: 2000 of 2000 (evaluation starts at row 0)
+==============================================================

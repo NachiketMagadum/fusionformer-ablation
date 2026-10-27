@@ -1,0 +1,17 @@
+LSTM SEQ2SEQ BASELINE (v3)
+==============================================================
+Dataset: skab 1
+Model: LSTM encoder-decoder (T=96, tau=24), seed=42
+Hyperparameters: hidden=64, layers=2, lr=0.003, batch=64
+Params: 104,968
+Training: early stopping, best epoch 17 of 27 (max 100, patience 10)
+Validation forecast MSE: 0.858858
+Wall-clock: 0.1 min on mps
+
+Test forecast MSE: 2.901936
+Test forecast MAE: 1.217244
+Test AUROC: 0.4138
+Test PR-AUC: 0.6394
+Test anomaly rate: 0.702
+Scored rows: 573 of 1145 (evaluation starts at row 572)
+==============================================================

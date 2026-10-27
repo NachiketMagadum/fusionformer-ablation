@@ -1,0 +1,47 @@
+SEQ2SEQ LSTM TUNING (validation only)
+======================================================================
+[coupled]
+ hidden     lr    mean  count
+     64 0.0003 0.92673      3
+     64 0.0010 0.88453      3
+     64 0.0030 0.68158      3
+    128 0.0003 0.94132      3
+    128 0.0010 0.79317      3
+    128 0.0030 0.72510      3
+    256 0.0003 0.93687      3
+    256 0.0010 0.82151      3
+    256 0.0030 0.67165      3
+  chosen: hidden=256 lr=0.003 (mean validation MSE 0.67165)
+  same split, naive forecasters: mean-forecast MSE 0.98927, persistence MSE 1.30034
+  chosen config beats both naive forecasters on validation: True
+
+[independent]
+ hidden     lr    mean  count
+     64 0.0003 0.97314      3
+     64 0.0010 0.96366      3
+     64 0.0030 0.95137      3
+    128 0.0003 0.90194      3
+    128 0.0010 0.95043      3
+    128 0.0030 0.93606      3
+    256 0.0003 0.97663      3
+    256 0.0010 0.96134      3
+    256 0.0030 0.92426      3
+  chosen: hidden=128 lr=0.0003 (mean validation MSE 0.90194)
+  same split, naive forecasters: mean-forecast MSE 1.00665, persistence MSE 1.25267
+  chosen config beats both naive forecasters on validation: True
+
+[skab]
+ hidden     lr    mean  count
+     64 0.0003 2.62292      5
+     64 0.0010 2.48433      5
+     64 0.0030 2.44306      5
+    128 0.0003 2.71142      5
+    128 0.0010 2.66124      5
+    128 0.0030 2.50604      5
+    256 0.0003 2.66071      5
+    256 0.0010 2.56583      5
+    256 0.0030 2.45208      5
+  chosen: hidden=64 lr=0.003 (mean validation MSE 2.44306)
+  same split, naive forecasters: mean-forecast MSE 2.76663, persistence MSE 1.35036
+  chosen config beats both naive forecasters on validation: False
+

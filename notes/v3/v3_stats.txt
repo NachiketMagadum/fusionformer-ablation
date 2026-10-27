@@ -1,0 +1,323 @@
+V3 PRE-REGISTERED ANALYSIS (notes/v3/design_v3.md)
+==========================================================================
+                          auroc                   mae              
+                           mean     std count    mean     std count
+group       variant                                                
+coupled     adv_only     0.5467  0.0980    30  3.2467  0.9319    30
+            full         0.7883  0.0519    30  0.3563  0.0199    30
+            no_fam       0.8309  0.0332    30  0.3414  0.0174    30
+            no_fam_pm    0.8282  0.0343    30  0.3442  0.0167    30
+            no_mswaa     0.8218  0.0399    30  0.3472  0.0150    30
+            no_mswaa_pm  0.8128  0.0481    30  0.3497  0.0150    30
+            no_mswea     0.8082  0.0499    30  0.3491  0.0196    30
+            no_mswea_pm  0.8098  0.0465    30  0.3491  0.0174    30
+            s2s          0.5847  0.0866    30  0.7033  0.0458    30
+independent adv_only     0.6496  0.1110    30  2.5844  1.3992    30
+            full         0.9456  0.0161    30  0.3103  0.0183    30
+            no_fam       0.9502  0.0157    30  0.3048  0.0187    30
+            no_fam_pm    0.9535  0.0149    30  0.3046  0.0180    30
+            no_mswaa     0.9470  0.0195    30  0.3120  0.0250    30
+            no_mswaa_pm  0.9468  0.0209    30  0.3144  0.0276    30
+            no_mswea     0.9405  0.0156    30  0.3152  0.0201    30
+            no_mswea_pm  0.9416  0.0173    30  0.3160  0.0192    30
+            s2s          0.5112  0.1117    30  0.8402  0.0446    30
+skab        adv_only     0.5586  0.2197    15  8.9359  2.4130    15
+            full         0.4927  0.2534    15  1.1403  0.2818    15
+            no_fam       0.5160  0.2888    15  1.0753  0.3060    15
+            no_fam_pm    0.5108  0.2858    15  1.0716  0.2879    15
+            no_mswaa     0.5685  0.3161    15  1.1352  0.2828    15
+            no_mswaa_pm  0.5699  0.3162    15  1.1425  0.2832    15
+            no_mswea     0.4552  0.2581    15  1.1048  0.2815    15
+            s2s          0.4802  0.2865    15  1.3851  0.2973    15
+
+A PRIMARY: attention branches vs parameter-matched controls (Holm over 6)
+--- MSWAA vs matched [coupled] (auroc)
+  full mean 0.7883   no_mswaa_pm mean 0.8128
+  mean diff (full - no_mswaa_pm) -0.0245  95% CI [-0.0455, -0.0035]  d_z -0.43
+  n 30  full higher 11  no_mswaa_pm higher 19  ties 0
+  Wilcoxon W 129.0  p 0.0327  Holm p 0.0982  Z -2.129  r 0.389
+  per-unit (n=10): mean -0.0245, 4/10 positive, Wilcoxon p 0.3223
+  mixed model (random intercept per unit): -0.0245 [-0.0577, +0.0087], p 0.1486
+  VERDICT 'MSWAA vs matched' helps in coupled: False
+--- FAM vs matched [coupled] (auroc)
+  full mean 0.7883   no_fam_pm mean 0.8282
+  mean diff (full - no_fam_pm) -0.0399  95% CI [-0.0557, -0.0241]  d_z -0.94
+  n 30  full higher 5  no_fam_pm higher 25  ties 0
+  Wilcoxon W 40.5  p 0.0001  Holm p 0.0005  Z -3.949  r 0.721
+  per-unit (n=10): mean -0.0399, 2/10 positive, Wilcoxon p 0.0195
+  mixed model (random intercept per unit): -0.0399 [-0.0662, -0.0137], p 0.0029
+  VERDICT 'FAM vs matched' helps in coupled: False
+--- MSWAA vs matched [independent] (auroc)
+  full mean 0.9456   no_mswaa_pm mean 0.9468
+  mean diff (full - no_mswaa_pm) -0.0012  95% CI [-0.0067, +0.0044]  d_z -0.08
+  n 30  full higher 17  no_mswaa_pm higher 13  ties 0
+  Wilcoxon W 218.5  p 0.7734  Holm p 0.7734  Z -0.288  r 0.053
+  per-unit (n=10): mean -0.0012, 5/10 positive, Wilcoxon p 0.7695
+  mixed model (random intercept per unit): -0.0012 [-0.0106, +0.0083], p 0.8097
+  VERDICT 'MSWAA vs matched' helps in independent: False
+--- FAM vs matched [independent] (auroc)
+  full mean 0.9456   no_fam_pm mean 0.9535
+  mean diff (full - no_fam_pm) -0.0078  95% CI [-0.0117, -0.0040]  d_z -0.76
+  n 30  full higher 10  no_fam_pm higher 20  ties 0
+  Wilcoxon W 75.0  p 0.0012  Holm p 0.0060  Z -3.240  r 0.591
+  per-unit (n=10): mean -0.0078, 3/10 positive, Wilcoxon p 0.0527
+  mixed model (random intercept per unit): -0.0078 [-0.0143, -0.0014], p 0.0174
+  VERDICT 'FAM vs matched' helps in independent: False
+--- MSWAA vs matched [skab] (auroc)
+  full mean 0.4927   no_mswaa_pm mean 0.5699
+  mean diff (full - no_mswaa_pm) -0.0772  95% CI [-0.1342, -0.0202]  d_z -0.75
+  n 15  full higher 3  no_mswaa_pm higher 12  ties 0
+  Wilcoxon W 18.0  p 0.0151  Holm p 0.0603  Z -2.385  r 0.616
+  per-unit (n=5): mean -0.0772, 1/5 positive, Wilcoxon p 0.1875
+  mixed model (random intercept per unit): -0.0772 [-0.1726, +0.0181], p 0.1124
+  VERDICT 'MSWAA vs matched' helps in skab: False
+--- FAM vs matched [skab] (auroc)
+  full mean 0.4927   no_fam_pm mean 0.5108
+  mean diff (full - no_fam_pm) -0.0181  95% CI [-0.0589, +0.0227]  d_z -0.25
+  n 15  full higher 5  no_fam_pm higher 10  ties 0
+  Wilcoxon W 38.0  p 0.2293  Holm p 0.4586  Z -1.250  r 0.323
+  per-unit (n=5): mean -0.0181, 1/5 positive, Wilcoxon p 0.4375
+  mixed model (random intercept per unit): -0.0181 [-0.0854, +0.0491], p 0.5977
+  VERDICT 'FAM vs matched' helps in skab: False
+
+A SECONDARY: unmatched ablations and branch comparison (Holm within family)
+--- MSWAA unmatched [coupled] (auroc)
+  full mean 0.7883   no_mswaa mean 0.8218
+  mean diff (full - no_mswaa) -0.0336  95% CI [-0.0526, -0.0145]  d_z -0.66
+  n 30  full higher 9  no_mswaa higher 21  ties 0
+  Wilcoxon W 83.5  p 0.0022  Holm p 0.0152  Z -3.065  r 0.560
+  per-unit (n=10): mean -0.0336, 2/10 positive, Wilcoxon p 0.0645
+  mixed model (random intercept per unit): -0.0336 [-0.0657, -0.0015], p 0.0404
+--- FAM unmatched [coupled] (auroc)
+  full mean 0.7883   no_fam mean 0.8309
+  mean diff (full - no_fam) -0.0426  95% CI [-0.0579, -0.0274]  d_z -1.04
+  n 30  full higher 4  no_fam higher 26  ties 0
+  Wilcoxon W 31.0  p 0.0000  Holm p 0.0000  Z -4.145  r 0.757
+  per-unit (n=10): mean -0.0426, 2/10 positive, Wilcoxon p 0.0137
+  mixed model (random intercept per unit): -0.0426 [-0.0680, -0.0173], p 0.0010
+--- MSWAA-only minus MSWEA-only [coupled] (auroc)
+  no_mswea mean 0.8082   no_mswaa mean 0.8218
+  mean diff (no_mswea - no_mswaa) -0.0136  95% CI [-0.0308, +0.0036]  d_z -0.30
+  n 30  no_mswea higher 9  no_mswaa higher 21  ties 0
+  Wilcoxon W 141.0  p 0.0606  Holm p 0.1817  Z -1.882  r 0.344
+  per-unit (n=10): mean -0.0136, 2/10 positive, Wilcoxon p 0.2754
+  mixed model (random intercept per unit): -0.0136 [-0.0420, +0.0148], p 0.3472
+--- MSWAA unmatched [independent] (auroc)
+  full mean 0.9456   no_mswaa mean 0.9470
+  mean diff (full - no_mswaa) -0.0014  95% CI [-0.0065, +0.0037]  d_z -0.10
+  n 30  full higher 15  no_mswaa higher 15  ties 0
+  Wilcoxon W 211.0  p 0.6583  Holm p 0.6583  Z -0.442  r 0.081
+  per-unit (n=10): mean -0.0014, 6/10 positive, Wilcoxon p 0.9219
+  mixed model (random intercept per unit): -0.0014 [-0.0099, +0.0071], p 0.7505
+--- FAM unmatched [independent] (auroc)
+  full mean 0.9456   no_fam mean 0.9502
+  mean diff (full - no_fam) -0.0046  95% CI [-0.0083, -0.0009]  d_z -0.47
+  n 30  full higher 11  no_fam higher 19  ties 0
+  Wilcoxon W 122.5  p 0.0237  Holm p 0.0946  Z -2.263  r 0.413
+  per-unit (n=10): mean -0.0046, 4/10 positive, Wilcoxon p 0.2754
+  mixed model (random intercept per unit): -0.0046 [-0.0107, +0.0016], p 0.1445
+--- MSWAA-only minus MSWEA-only [independent] (auroc)
+  no_mswea mean 0.9405   no_mswaa mean 0.9470
+  mean diff (no_mswea - no_mswaa) -0.0065  95% CI [-0.0114, -0.0016]  d_z -0.50
+  n 30  no_mswea higher 9  no_mswaa higher 21  ties 0
+  Wilcoxon W 113.5  p 0.0144  Holm p 0.0747  Z -2.448  r 0.447
+  per-unit (n=10): mean -0.0065, 3/10 positive, Wilcoxon p 0.1934
+  mixed model (random intercept per unit): -0.0065 [-0.0147, +0.0017], p 0.1203
+--- MSWAA unmatched [skab] (auroc)
+  full mean 0.4927   no_mswaa mean 0.5685
+  mean diff (full - no_mswaa) -0.0758  95% CI [-0.1336, -0.0180]  d_z -0.73
+  n 15  full higher 3  no_mswaa higher 12  ties 0
+  Wilcoxon W 17.0  p 0.0125  Holm p 0.0747  Z -2.442  r 0.631
+  per-unit (n=5): mean -0.0758, 1/5 positive, Wilcoxon p 0.3125
+  mixed model (random intercept per unit): -0.0758 [-0.1727, +0.0211], p 0.1253
+--- FAM unmatched [skab] (auroc)
+  full mean 0.4927   no_fam mean 0.5160
+  mean diff (full - no_fam) -0.0233  95% CI [-0.0704, +0.0238]  d_z -0.27
+  n 15  full higher 4  no_fam higher 11  ties 0
+  Wilcoxon W 36.0  p 0.1876  Holm p 0.3752  Z -1.363  r 0.352
+  per-unit (n=5): mean -0.0233, 1/5 positive, Wilcoxon p 0.4375
+  mixed model (random intercept per unit): -0.0233 [-0.1019, +0.0553], p 0.5611
+--- MSWAA-only minus MSWEA-only [skab] (auroc)
+  no_mswea mean 0.4552   no_mswaa mean 0.5685
+  mean diff (no_mswea - no_mswaa) -0.1133  95% CI [-0.1949, -0.0317]  d_z -0.77
+  n 15  no_mswea higher 2  no_mswaa higher 13  ties 0
+  Wilcoxon W 6.0  p 0.0009  Holm p 0.0068  Z -3.067  r 0.792
+  per-unit (n=5): mean -0.1133, 0/5 positive, Wilcoxon p 0.0625
+  mixed model (random intercept per unit): -0.1133 [-0.2519, +0.0254], p 0.1094
+
+A SMD (descriptive, 3 machines): no data yet
+
+C seq2seq LSTM: full vs s2s, AUROC (Holm over groups)
+--- Fusionformer vs seq2seq LSTM [coupled] (auroc)
+  full mean 0.7883   s2s mean 0.5847
+  mean diff (full - s2s) +0.2035  95% CI [+0.1742, +0.2329]  d_z +2.59
+  n 30  full higher 30  s2s higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +0.2035, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +0.2035 [+0.1566, +0.2505], p 0.0000
+--- Fusionformer vs seq2seq LSTM [independent] (auroc)
+  full mean 0.9456   s2s mean 0.5112
+  mean diff (full - s2s) +0.4344  95% CI [+0.3947, +0.4742]  d_z +4.08
+  n 30  full higher 30  s2s higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +0.4344, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +0.4344 [+0.3755, +0.4934], p 0.0000
+--- Fusionformer vs seq2seq LSTM [skab] (auroc)
+  full mean 0.4927   s2s mean 0.4802
+  mean diff (full - s2s) +0.0126  95% CI [-0.0531, +0.0782]  d_z +0.11
+  n 15  full higher 9  s2s higher 6  ties 0
+  Wilcoxon W 49.0  p 0.5614  Holm p 0.5614  Z +0.625  r 0.161
+  per-unit (n=5): mean +0.0126, 3/5 positive, Wilcoxon p 0.8125
+  mixed model (random intercept per unit): +0.0126 [-0.0988, +0.1239], p 0.8252
+
+C seq2seq LSTM: forecast MAE, positive = Fusionformer lower error
+--- MAE s2s minus full [coupled] (mae)
+  s2s mean 0.7033   full mean 0.3563
+  mean diff (s2s - full) +0.3470  95% CI [+0.3304, +0.3636]  d_z +7.80
+  n 30  s2s higher 30  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +0.3470, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +0.3470 [+0.3255, +0.3685], p 0.0000
+--- MAE s2s minus full [independent] (mae)
+  s2s mean 0.8402   full mean 0.3103
+  mean diff (s2s - full) +0.5299  95% CI [+0.5107, +0.5491]  d_z +10.31
+  n 30  s2s higher 30  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +0.5299, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +0.5299 [+0.5003, +0.5594], p 0.0000
+--- MAE s2s minus full [skab] (mae)
+  s2s mean 1.3851   full mean 1.1403
+  mean diff (s2s - full) +0.2448  95% CI [+0.0719, +0.4177]  d_z +0.78
+  n 15  s2s higher 15  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0001  Holm p 0.0001  Z +3.408  r 0.880
+  per-unit (n=5): mean +0.2448, 5/5 positive, Wilcoxon p 0.0625
+  mixed model (random intercept per unit): +0.2448 [-0.0503, +0.5398], p 0.1039
+
+D adversarial-only objective: full vs adv_only, AUROC (Holm over 3)
+--- Huber objective vs adversarial-only [coupled] (auroc)
+  full mean 0.7883   adv_only mean 0.5467
+  mean diff (full - adv_only) +0.2416  95% CI [+0.2001, +0.2831]  d_z +2.17
+  n 30  full higher 30  adv_only higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +0.2416, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +0.2416 [+0.1981, +0.2850], p 0.0000
+--- Huber objective vs adversarial-only [independent] (auroc)
+  full mean 0.9456   adv_only mean 0.6496
+  mean diff (full - adv_only) +0.2960  95% CI [+0.2547, +0.3373]  d_z +2.68
+  n 30  full higher 30  adv_only higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +0.2960, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +0.2960 [+0.2565, +0.3356], p 0.0000
+--- Huber objective vs adversarial-only [skab] (auroc)
+  full mean 0.4927   adv_only mean 0.5586
+  mean diff (full - adv_only) -0.0659  95% CI [-0.1642, +0.0325]  d_z -0.37
+  n 15  full higher 5  adv_only higher 10  ties 0
+  Wilcoxon W 31.0  p 0.1070  Holm p 0.1070  Z -1.647  r 0.425
+  per-unit (n=5): mean -0.0659, 2/5 positive, Wilcoxon p 0.4375
+  mixed model (random intercept per unit): -0.0659 [-0.1848, +0.0530], p 0.2775
+
+D adversarial-only objective: forecast MAE, positive = Huber model lower error
+--- MAE adv_only minus full [coupled] (mae)
+  adv_only mean 3.2467   full mean 0.3563
+  mean diff (adv_only - full) +2.8904  95% CI [+2.5406, +3.2403]  d_z +3.08
+  n 30  adv_only higher 30  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +2.8904, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +2.8904 [+2.4757, +3.3052], p 0.0000
+--- MAE adv_only minus full [independent] (mae)
+  adv_only mean 2.5844   full mean 0.3103
+  mean diff (adv_only - full) +2.2741  95% CI [+1.7538, +2.7943]  d_z +1.63
+  n 30  adv_only higher 30  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0000  Holm p 0.0000  Z +4.782  r 0.873
+  per-unit (n=10): mean +2.2741, 10/10 positive, Wilcoxon p 0.0020
+  mixed model (random intercept per unit): +2.2741 [+1.7743, +2.7738], p 0.0000
+--- MAE adv_only minus full [skab] (mae)
+  adv_only mean 8.9359   full mean 1.1403
+  mean diff (adv_only - full) +7.7956  95% CI [+6.3860, +9.2052]  d_z +3.06
+  n 15  adv_only higher 15  full higher 0  ties 0
+  Wilcoxon W 0.0  p 0.0001  Holm p 0.0001  Z +3.408  r 0.880
+  per-unit (n=5): mean +7.7956, 5/5 positive, Wilcoxon p 0.0625
+  mixed model (random intercept per unit): +7.7956 [+6.4126, +9.1785], p 0.0000
+
+D descriptive: adversarial-only test MAE vs the training-mean forecast (seed-averaged)
+      group              id  adv_only_mae  mean_forecast_mae  adv_only_beats_mean_forecast
+    coupled     coupled_100        3.5508             0.8049                         False
+    coupled     coupled_101        2.3141             0.7944                         False
+    coupled     coupled_102        3.6070             0.8412                         False
+    coupled     coupled_103        3.1173             0.8770                         False
+    coupled     coupled_104        3.2544             0.8371                         False
+    coupled     coupled_105        2.6713             0.8110                         False
+    coupled     coupled_106        2.2185             0.8335                         False
+    coupled     coupled_107        4.1817             0.8266                         False
+    coupled     coupled_108        3.8559             0.8147                         False
+    coupled     coupled_109        3.6959             0.8166                         False
+independent independent_100        2.2709             0.8855                         False
+independent independent_101        3.4270             0.8746                         False
+independent independent_102        2.1818             0.8868                         False
+independent independent_103        3.3865             0.8743                         False
+independent independent_104        1.8722             0.8800                         False
+independent independent_105        3.8041             0.8783                         False
+independent independent_106        1.9214             0.8832                         False
+independent independent_107        1.9517             0.8835                         False
+independent independent_108        2.1780             0.8863                         False
+independent independent_109        2.8504             0.8818                         False
+       skab               0        7.2366             1.8608                         False
+       skab               1        8.0906             1.2453                         False
+       skab               2       10.5882             0.9790                         False
+       skab               3        9.6070             1.0840                         False
+       skab               4        9.1573             1.1302                         False
+             adv_only_mae  mean_forecast_mae  adv_only_beats_mean_forecast
+group                                                                     
+coupled            3.2467             0.8257                           0.0
+independent        2.5844             0.8814                           0.0
+skab               8.9359             1.2599                           0.0
+
+C tuning summary (validation only):
+SEQ2SEQ LSTM TUNING (validation only)
+======================================================================
+[coupled]
+ hidden     lr    mean  count
+     64 0.0003 0.92673      3
+     64 0.0010 0.88453      3
+     64 0.0030 0.68158      3
+    128 0.0003 0.94132      3
+    128 0.0010 0.79317      3
+    128 0.0030 0.72510      3
+    256 0.0003 0.93687      3
+    256 0.0010 0.82151      3
+    256 0.0030 0.67165      3
+  chosen: hidden=256 lr=0.003 (mean validation MSE 0.67165)
+  same split, naive forecasters: mean-forecast MSE 0.98927, persistence MSE 1.30034
+  chosen config beats both naive forecasters on validation: True
+
+[independent]
+ hidden     lr    mean  count
+     64 0.0003 0.97314      3
+     64 0.0010 0.96366      3
+     64 0.0030 0.95137      3
+    128 0.0003 0.90194      3
+    128 0.0010 0.95043      3
+    128 0.0030 0.93606      3
+    256 0.0003 0.97663      3
+    256 0.0010 0.96134      3
+    256 0.0030 0.92426      3
+  chosen: hidden=128 lr=0.0003 (mean validation MSE 0.90194)
+  same split, naive forecasters: mean-forecast MSE 1.00665, persistence MSE 1.25267
+  chosen config beats both naive forecasters on validation: True
+
+[skab]
+ hidden     lr    mean  count
+     64 0.0003 2.62292      5
+     64 0.0010 2.48433      5
+     64 0.0030 2.44306      5
+    128 0.0003 2.71142      5
+    128 0.0010 2.66124      5
+    128 0.0030 2.50604      5
+    256 0.0003 2.66071      5
+    256 0.0010 2.56583      5
+    256 0.0030 2.45208      5
+  chosen: hidden=64 lr=0.003 (mean validation MSE 2.44306)
+  same split, naive forecasters: mean-forecast MSE 2.76663, persistence MSE 1.35036
+  chosen config beats both naive forecasters on validation: False
+
+

@@ -1,0 +1,5 @@
+LSTM SEQ2SEQ TUNING (validation only)
+Dataset: skab 1
+seed=0 hidden=64 lr=0.001
+Best epoch: 7 of 17
+Validation forecast MSE: 0.940489

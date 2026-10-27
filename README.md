@@ -37,11 +37,16 @@ The paper does not ablate these components or test on public benchmarks. This re
   - Treating machines, files or series as the unit, no SMD or SKAB effect differs from zero.
   - The only robust MSWEA effect is a small gain (about +0.004 AUROC) on independent-channel simulated data.
   - A pre-registered tuning of the LSTM baseline (validation-only selection) did not lift it above chance.
-- **v3 (pre-registered, in progress; design in [notes/v3/design_v3.md](notes/v3/design_v3.md)):**
-  - MSWAA-off and FAM-off ablations, with parameter-matched controls.
-  - Per-channel normalised scoring on SMD, checked against the naive floor.
-  - A seq2seq LSTM baseline with early stopping.
-  - The paper's adversarial-only training objective.
+- **v3 (pre-registered; see [RESULTS_v3.md](RESULTS_v3.md)):**
+  - No attention component helped against a parameter-matched control.
+    - An attention-free model of the same size scored *higher* than the full Fusionformer on both simulated
+      conditions: −0.040 and −0.008 AUROC, Holm p ≤ 0.006.
+    - On SKAB every variant stayed near chance.
+  - A seq2seq LSTM with early stopping now beats the naive forecasts on validation, but remains far below
+    Fusionformer.
+  - Training on the paper's adversarial-only objective did not produce a working forecaster: its errors were 3-7x
+    worse than predicting the mean.
+  - SMD per-channel scoring (item B) has not been run yet.
 
 ## Repository layout
 

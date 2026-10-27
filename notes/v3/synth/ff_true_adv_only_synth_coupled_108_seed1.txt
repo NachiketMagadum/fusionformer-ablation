@@ -1,0 +1,17 @@
+FAITHFUL FUSIONFORMER RESULTS (per Wang et al. 2025)
+==============================================================
+Dataset: synth coupled_108
+Model: Fusionformer forecasting (T=96, tau=24), seed=1
+Hyperparameters (paper-matched): d_model=252, n_heads=6, L_seg=4, N_enc=1, N_dec=1
+Fusionformer params: 3,255,864, Discriminator params: 139,649
+Training: 15 epochs, batch 64, lr_F=0.00015, lr_D=7.5e-05, adv weight=0.0
+Objective: adversarial loss only (paper eq 14)
+Wall-clock: 106.9 min on mps
+
+Test forecast MSE: 14.865928
+Test forecast MAE: 3.014313
+Test AUROC: 0.4644
+Test PR-AUC: 0.0981
+Test anomaly rate: 0.112
+Scored rows: 2000 of 2000 (evaluation starts at row 0)
+==============================================================

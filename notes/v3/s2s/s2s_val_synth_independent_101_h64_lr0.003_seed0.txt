@@ -1,0 +1,5 @@
+LSTM SEQ2SEQ TUNING (validation only)
+Dataset: synth independent_101
+seed=0 hidden=64 lr=0.003
+Best epoch: 2 of 12
+Validation forecast MSE: 0.974769
